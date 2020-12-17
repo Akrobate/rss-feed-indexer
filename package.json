@@ -10,9 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.6.0",
+    "axios": "^0.21.0",
     "bluebird": "^3.7.2",
     "eslint": "^7.15.0",
     "mocha": "^8.2.1",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "rss-parser": "^3.10.0"
   }
 }
