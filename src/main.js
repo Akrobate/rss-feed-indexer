@@ -1,11 +1,14 @@
 'use strict';
 
-let Parser = require('rss-parser');
-let parser = new Parser();
+const {
+    RssFeedParser,
+} = require('./libraries/RssFeedParser')
 
-parser
-    // .parseURL('https://www.reddit.com/.rss')
-    .parseURL('https://www.nomination.fr/feed/')
+const url = 'http://www.nomination.fr/feed'
+
+RssFeedParser
+    .getInstance()
+    .parseRssFeedUrl(url)
     .then((feed) => {
         console.log(feed.title);
         feed.items.forEach(item => {
@@ -16,4 +19,7 @@ parser
             console.log(Object.keys(item))
             console.log('------------------------------------------------')
         });
+    })
+    .catch((error) => {
+        console.log(error.message);
     });
