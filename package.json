@@ -12,8 +12,12 @@
     "amqplib": "^0.6.0",
     "axios": "^0.21.0",
     "bluebird": "^3.7.2",
+    "csv-parser": "^3.0.0",
+    "deepmerge": "^4.2.2",
     "eslint": "^7.15.0",
+    "json2csv": "^5.0.5",
     "mocha": "^8.2.1",
+    "mongodb": "^3.6.3",
     "nyc": "^15.1.0",
     "rss-parser": "^3.10.0"
   }
