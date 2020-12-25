@@ -2,6 +2,7 @@
 
 const {
     MongoClient,
+    ObjectID,
 } = require('mongodb');
 
 const {
@@ -332,6 +333,20 @@ class MongoDbRepository {
                     }
                 )
             );
+    }
+
+    /**
+     * @returns {ObjectId}
+     */
+    buildNewObjectId() {
+        return new ObjectID();
+    }
+
+    /**
+     * @returns {ObjectId}
+     */
+    builObjectIdFromString(object_id_string) {
+        return new ObjectID(object_id_string);
     }
 
 }
