@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+
 'use strict';
 
 const Promise = require('bluebird');
@@ -21,25 +23,33 @@ mongodb_repository
         website_url_to_insert_count += 1;
     }))
     .then(() => {
+        console.log('Start inserting');
         return Promise.mapSeries(
             website_url_to_insert,
             (data) => {
-                // console.log('Remaining documents to insert: ' + website_url_to_insert_count--)
-                return mongodb_repository.findDocument(rss_feed_url_collection_name, {
-                    website_url: data.website_url,
-                })
-                .then((found_document) => {
-                    if (found_document === null) {
-                        return mongodb_repository.insertDocument(rss_feed_url_collection_name, {
-                                id: Number(data.id),
-                                website_url: data.website_url
-                            })
+                console.log(`Remaining documents to insert: ${website_url_to_insert_count}`);
+                website_url_to_insert_count--;
+                return mongodb_repository
+                    .findDocument(rss_feed_url_collection_name, {
+                        website_url: data.website_url,
+                    })
+                    .then((found_document) => {
+                        if (found_document === null) {
+                            return mongodb_repository
+                                .insertDocument(rss_feed_url_collection_name,
+                                    {
+                                        id: Number(data.id),
+                                        website_url: data.website_url,
+                                        rss_feed_url: `${data.website_url}/feed`.replace('//feed', '/feed'),
+                                        last_check_date: null,
+                                        rss_available: null,
+                                    }
+                                )
                                 .catch(console.log);
-                    }
-                });
+                        }
+                        return null;
+                    });
             }
         );
     })
-    .then(() => {
-        return mongodb_repository.closeConnection();
-    });
+    .then(() => mongodb_repository.closeConnection());
