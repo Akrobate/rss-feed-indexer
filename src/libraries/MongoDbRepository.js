@@ -120,7 +120,8 @@ class MongoDbRepository {
      */
     useDataBase(database_name) {
         if (this.mongodb_connection_database_handler[database_name] === undefined) {
-            this.mongodb_connection_database_handler[database_name] = this.mongodb_connection_handler.db(database_name);
+            this.mongodb_connection_database_handler[database_name] = this
+                .mongodb_connection_handler.db(database_name);
         }
         return this.mongodb_connection_database_handler[database_name];
     }
@@ -137,7 +138,8 @@ class MongoDbRepository {
             .then(() => this.useDataBase(MongoDbRepository.DATABASE_NAME))
             .then((dbo) => dbo.collections())
             .then((collection_list) => {
-                if (!collection_list.map((colection) => colection.s.namespace.collection).includes(collection_name)) {
+                if (!collection_list.map((colection) => colection.s.namespace.collection)
+                    .includes(collection_name)) {
                     return this.createCollection(collection_name);
                 }
                 return true;
@@ -343,6 +345,7 @@ class MongoDbRepository {
     }
 
     /**
+     * @param {String} object_id_string
      * @returns {ObjectId}
      */
     builObjectIdFromString(object_id_string) {
