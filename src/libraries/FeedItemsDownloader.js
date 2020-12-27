@@ -43,7 +43,6 @@ class FeedItemsDownloader {
         return this.rss_feed_parser
             .parseRssFeedUrl(feed_rss_url)
             .then((rss_object) => {
-                // console.log(rss_object);
                 const {
                     items,
                 } = rss_object;
@@ -52,6 +51,7 @@ class FeedItemsDownloader {
                         {},
                         item,
                         {
+                            pubDate: new Date(item.pubDate),
                             rss_feed_url_id,
                         }
                     );
