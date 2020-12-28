@@ -53,7 +53,18 @@ describe('FeedItemsDownloader', () => {
                 console.log(data);
                 // fs.writeFileSync('./test/seeds/feed_rss_result', JSON.stringify(data));
                 done();
-            });
+            })
+            .catch(console.log);
+    });
+
+    it('FeedItemsDownloader should catch error', (done) => {
+        const rss_feed_url_id = '2213';
+        const url_rss_feed = 'https://www.nomination.fr/feedss';
+
+        const feed_items_downloader = FeedItemsDownloader.getInstance();
+        feed_items_downloader
+            .getItemsFromRssFeedUrl(url_rss_feed, rss_feed_url_id)
+            .catch(() => done());
     });
 
 
