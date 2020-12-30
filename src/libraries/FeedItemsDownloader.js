@@ -3,7 +3,7 @@
 const Promise = require('bluebird');
 const {
     MongoDbRepository,
-} = require('./MongoDbRepository');
+} = require('../repositories');
 
 const {
     RssFeedParser,

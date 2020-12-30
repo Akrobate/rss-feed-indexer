@@ -5,8 +5,10 @@
 const Promise = require('bluebird');
 const {
     CsvFile,
-    MongoDbRepository,
 } = require('./libraries');
+const {
+    MongoDbRepository,
+} = require('./repositories');
 
 const source_file = './data/sources/WordPress.csv';
 const rss_feed_url_collection_name = 'rss-feed-url';
