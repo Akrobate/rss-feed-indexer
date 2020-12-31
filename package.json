@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive"
+    "test": "mocha --recursive",
+    "start": "node src/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,5 +25,8 @@
     "nyc": "^15.1.0",
     "rss-parser": "^3.10.0",
     "sinon": "^9.2.2"
+  },
+  "devDependencies": {
+    "supertest": "^6.0.1"
   }
 }
