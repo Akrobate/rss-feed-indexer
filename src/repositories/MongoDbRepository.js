@@ -258,15 +258,17 @@ class MongoDbRepository {
      * @param {Number} limit
      * @param {Number} offset
      * @param {Object} fields_selection
+     * @param {Object} sort
      * @returns {Promise<Object|error>}
      */
-    findDocumentList(collection_name, query, limit, offset, fields_selection) {
+    findDocumentList(collection_name, query, limit, offset, fields_selection, sort) {
         return this
             .getConnection()
             .then(() => this.useDataBase(MongoDbRepository.DATABASE_NAME))
             .then((dbo) => dbo
                 .collection(collection_name)
                 .find(query, fields_selection)
+                .sort(sort)
                 .skip(offset === undefined ? 0 : offset)
                 .limit(limit === undefined ? 0 : limit)
                 .toArray()
@@ -334,6 +336,29 @@ class MongoDbRepository {
                         $set: document,
                     }
                 )
+            );
+    }
+
+    /**
+     * Returns a list of found documents
+     *
+     * @param {String} collection_name
+     * @param {Object} aggregation
+     * @returns {Promise<Object|error>}
+     */
+    aggregate(collection_name, aggregation) {
+        return this
+            .getConnection()
+            .then(() => this.useDataBase(MongoDbRepository.DATABASE_NAME))
+            .then((dbo) => dbo
+                .collection(collection_name)
+                .aggregate(
+                    aggregation,
+                    {
+                        allowDiskUse: true,
+                    }
+                )
+                .toArray()
             );
     }
 

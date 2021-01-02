@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 'use strict';
 
 const {
@@ -34,20 +35,9 @@ class RssFeedItemRepository {
         const {
             limit,
             offset,
-            publication_end_date,
-            publication_start_date,
         } = criteria;
 
-        const query = {};
-
-        query.pubDate = Object.assign({}, query.pubDate, {
-            $gte: ISODate(publication_end_date)
-        });
-
-        // created_at: {
-        //     $gte: ISODate("2010-04-29T00:00:00.000Z"),
-        //     $lt: ISODate("2010-05-01T00:00:00.000Z")
-        // }
+        const query = this.formatSearchCriteria(criteria);
 
         return this
             .mongo_db_repository
@@ -55,10 +45,56 @@ class RssFeedItemRepository {
                 RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
                 query,
                 limit,
-                offset
+                offset,
+                undefined,
+                {
+                    pubDate: -1,
+                }
             );
     }
 
+    /**
+     * @param {Object} criteria
+     * @returns {Promise}
+     */
+    searchDailyAggregated(criteria) {
+        const aggregation = [
+            {
+                $match: this.formatSearchCriteria(criteria),
+            },
+            {
+                $group: {
+                    _id: {
+                        rss_feed_url_id: '$rss_feed_url_id',
+                        date: {
+                            $dateToString: {
+                                date: '$pubDate',
+                                format: '%Y-%m-%d',
+                            },
+                        },
+                    },
+                    item_count: {
+                        $sum: 1,
+                    },
+                    first: {
+                        $first: '$$ROOT',
+                    },
+                },
+            },
+            {
+                $sort: {
+                    'first.pubDate': -1,
+                },
+            },
+        ];
+
+        return this
+            .mongo_db_repository
+            .aggregate(
+                RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
+                aggregation
+            );
+    }
 
     /**
      *
@@ -70,19 +106,26 @@ class RssFeedItemRepository {
         const {
             publication_end_date,
             publication_start_date,
+            language_list,
         } = criteria;
 
         const query = {};
 
         if (publication_end_date) {
             query.pubDate = Object.assign({}, query.pubDate, {
-                $gte: publication_end_date,
+                $gte: new Date(publication_end_date),
             });
         }
 
         if (publication_start_date) {
             query.pubDate = Object.assign({}, query.pubDate, {
-                $lte: publication_start_date,
+                $lte: new Date(publication_start_date),
+            });
+        }
+
+        if (language_list) {
+            query.language = Object.assign({}, query.language, {
+                $in: language_list,
             });
         }
 
