@@ -29,12 +29,42 @@ class RssFeedItemController {
      */
     search(request, response) {
         const {
+            limit,
+            offset,
             publication_start_date,
             publication_end_date,
         } = request.query;
         return this
             .rss_feed_item_service
             .search({
+                limit: Number(limit),
+                offset: Number(offset),
+                publication_end_date,
+                publication_start_date,
+            })
+            .then((data) => response.status(200).send({
+                count: data.length,
+                rss_item_list: data,
+            }));
+    }
+
+    /**
+     * @param {Object} request
+     * @param {Object} response
+     * @returns {Object}
+     */
+    normalizedSearch(request, response) {
+        const {
+            limit,
+            offset,
+            publication_start_date,
+            publication_end_date,
+        } = request.body;
+        return this
+            .rss_feed_item_service
+            .normalizedSearch({
+                limit: Number(limit),
+                offset: Number(offset),
                 publication_end_date,
                 publication_start_date,
             })
