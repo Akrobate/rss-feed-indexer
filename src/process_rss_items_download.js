@@ -1,13 +1,20 @@
 'use strict';
 
+// 55376
+
 const Promise = require('bluebird');
 
-const logger = require('./logger')
+const {
+    logger,
+} = require('./logger');
 
 const {
     FeedItemsDownloader,
-    MongoDbRepository,
 } = require('./libraries/');
+
+const {
+    MongoDbRepository,
+} = require('./repositories/');
 
 const mongodb_repository = MongoDbRepository.getInstance();
 const feed_items_downloader = FeedItemsDownloader.getInstance();
