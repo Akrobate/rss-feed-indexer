@@ -108,7 +108,15 @@ class MongoDbRepository {
      * @returns {Promse<Object|error>}
      */
     closeConnection() {
-        return this.mongodb_connection_handler.close();
+        return new Promise((resolve) => this
+            .mongodb_connection_handler
+            .close()
+            .then((result) => {
+                this.cleanConnectionDatabaseHandler();
+                this.mongodb_connection_handler = null;
+                return resolve(result);
+            })
+        );
     }
 
 
@@ -121,9 +129,19 @@ class MongoDbRepository {
     useDataBase(database_name) {
         if (this.mongodb_connection_database_handler[database_name] === undefined) {
             this.mongodb_connection_database_handler[database_name] = this
-                .mongodb_connection_handler.db(database_name);
+                .mongodb_connection_handler
+                .db(database_name);
         }
         return this.mongodb_connection_database_handler[database_name];
+    }
+
+    /**
+     * @returns {void}
+     */
+    cleanConnectionDatabaseHandler() {
+        Object.keys(this.mongodb_connection_database_handler).forEach((key) => {
+            delete this.mongodb_connection_database_handler[key];
+        });
     }
 
     /**
