@@ -23,6 +23,43 @@ class RssFeedItemService {
         return RssFeedItemService.instance;
     }
 
+
+    /**
+     * @param {Object} criteria
+     * @returns {Promise<Array>}
+     */
+    normalizedSearch(criteria) {
+        const {
+            daily_aggregation,
+            limit,
+            offset,
+            publication_end_date,
+            publication_start_date,
+        } = criteria;
+
+        let type_search = 'search';
+        if (daily_aggregation) {
+            type_search = 'searchDailyAggregated';
+        }
+
+        return this[type_search](
+            Object.assign(
+                {},
+                {
+                    limit,
+                    offset,
+                    publication_end_date,
+                    publication_start_date,
+                },
+                {
+                    language_list: ['french'],
+                }
+            ))
+            .then((rss_item_list) => rss_item_list
+                .map((item) => this.normalizeRssItem(item))
+            );
+    }
+
     /**
      * @param {Object} criteria
      * @returns {Object}
@@ -32,24 +69,36 @@ class RssFeedItemService {
         return this.rss_feed_item_repository.search(criteria);
     }
 
+
     /**
      * @param {Object} criteria
-     * @returns {Promise<Array>}
+     * @returns {Object}
      */
-    normalizedSearch(criteria) {
+    searchDailyAggregated(criteria) {
         return this
-            .search(
-                Object.assign(
-                    {},
-                    criteria,
-                    {
-                        language_list: ['french'],
-                    }
-                )
-            )
-            .then((rss_item_list) => rss_item_list
-                .map((item) => this.normalizeRssItem(item))
+            .rss_feed_item_repository
+            .searchDailyAggregated(criteria)
+            .then((response) => response
+                .map((item) => this.formatDailyAggregatedResponse(item))
             );
+    }
+
+    /**
+     * @param {Object} item
+     * @return {Object}
+     */
+    formatDailyAggregatedResponse(item) {
+        const {
+            first,
+            item_count,
+        } = item;
+        return Object.assign(
+            {},
+            first,
+            {
+                item_count,
+            }
+        );
     }
 
     /**
@@ -65,12 +114,14 @@ class RssFeedItemService {
             contentSnippet,
             rss_feed_url_id,
             _id,
+            item_count,
         } = item;
 
         return {
-            categories,
+            categories: categories ? categories : [],
             id: _id,
             image_url_list: this.extractImgUrlsFromHtml(item['content:encoded']),
+            item_count,
             link,
             publication_date: moment(pubDate).toISOString(),
             rss_feed_url_id,

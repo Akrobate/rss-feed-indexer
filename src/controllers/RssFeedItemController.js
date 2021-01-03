@@ -59,10 +59,12 @@ class RssFeedItemController {
             offset,
             publication_start_date,
             publication_end_date,
+            daily_aggregation,
         } = request.body;
         return this
             .rss_feed_item_service
             .normalizedSearch({
+                daily_aggregation: daily_aggregation ? daily_aggregation : false,
                 limit: Number(limit),
                 offset: Number(offset),
                 publication_end_date,

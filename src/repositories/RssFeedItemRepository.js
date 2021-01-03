@@ -1,4 +1,5 @@
 /* eslint-disable sort-keys */
+
 'use strict';
 
 const {
@@ -58,6 +59,10 @@ class RssFeedItemRepository {
      * @returns {Promise}
      */
     searchDailyAggregated(criteria) {
+        const {
+            limit,
+            offset,
+        } = criteria;
         const aggregation = [
             {
                 $match: this.formatSearchCriteria(criteria),
@@ -87,6 +92,18 @@ class RssFeedItemRepository {
                 },
             },
         ];
+
+        if (offset) {
+            aggregation.push({
+                $skip: Number(offset),
+            });
+        }
+
+        if (limit) {
+            aggregation.push({
+                $limit: Number(limit),
+            });
+        }
 
         return this
             .mongo_db_repository
@@ -130,6 +147,13 @@ class RssFeedItemRepository {
         }
 
         return query;
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    closeConnection() {
+        return this.mongo_db_repository.closeConnection();
     }
 }
 
