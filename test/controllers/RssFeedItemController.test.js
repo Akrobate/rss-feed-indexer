@@ -47,6 +47,8 @@ describe('RssFeedItemController', () => {
             .expects('search')
             .once()
             .withArgs({
+                limit: NaN,
+                offset: NaN,
                 publication_end_date: '2020-12-31T00:00:00Z',
                 publication_start_date: '2020-12-31T00:00:00Z',
             })
@@ -65,6 +67,40 @@ describe('RssFeedItemController', () => {
                     done(error);
                 }
                 expect(response.body).to.deep.equal({
+                    count: 0,
+                    rss_item_list: [],
+                });
+                done();
+            });
+    });
+
+    it('Should be able to search normalized', (done) => {
+
+        mocks.rss_feed_item_service
+            .expects('normalizedSearch')
+            .once()
+            .withArgs({
+                limit: NaN,
+                offset: NaN,
+                publication_end_date: '2020-12-31T00:00:00Z',
+                publication_start_date: '2020-12-31T00:00:00Z',
+            })
+            .returns(Promise.resolve([]));
+
+        superTest(app)
+            .post('/api/rss-feed-items/normalized')
+            .send({
+                publication_end_date: '2020-12-31T00:00:00Z',
+                publication_start_date: '2020-12-31T00:00:00Z',
+            })
+            .expect(200)
+            .end((error, response) => {
+                mocks.rss_feed_item_service.verify();
+                if (error) {
+                    done(error);
+                }
+                expect(response.body).to.deep.equal({
+                    count: 0,
                     rss_item_list: [],
                 });
                 done();
