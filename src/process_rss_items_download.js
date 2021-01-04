@@ -53,4 +53,9 @@ mongodb_repository.findDocumentList(rss_feed_url_collection_name, {})
                 });
         });
     })
-    .finally(() => mongodb_repository.closeConnection());
+    .finally(() => {
+        console.log('Exiting process');
+        mongodb_repository.closeConnection();
+        // eslint-disable-next-line no-process-exit
+        process.exit();
+    });
