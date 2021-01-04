@@ -53,3 +53,12 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+#  rss-indexer:
+#    image: node:12.20.0-alpine3.10
+#    restart: always
+#    ports:
+#      - 8090:8090
+#    volumes:
+#      - ./:/indexer
+#    command: bash -c "cd /indexer && npm start"
