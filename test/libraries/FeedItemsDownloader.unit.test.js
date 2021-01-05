@@ -3,7 +3,11 @@
 const fs = require('fs');
 const {
     mock,
+    stub,
 } = require('sinon');
+const {
+    expect,
+} = require('chai');
 const {
     FeedItemsDownloader,
 } = require('../../src/libraries');
@@ -11,16 +15,28 @@ const {
     RssFeedParser,
 } = require('../../src/libraries');
 
+
+const {
+    configuration,
+} = require('../../src/configuration');
+
 describe('FeedItemsDownloader', () => {
 
     const mocks = {};
-
+    const stubs = {};
     beforeEach(() => {
+        stubs.database_name = stub(configuration.storage.mongodb, 'database_name').value('test-database');
         mocks.rss_feed_parser = mock(RssFeedParser.getInstance());
     });
 
     afterEach(() => {
         mocks.rss_feed_parser.restore();
+        stubs.database_name.restore();
+    });
+
+    it('test configuration mock', (done) => {
+        expect(configuration.storage.mongodb.database_name).to.equal('test-database');
+        done();
     });
 
     it.skip('FeedItemsDownloader', (done) => {
@@ -42,7 +58,7 @@ describe('FeedItemsDownloader', () => {
             });
     });
 
-    it('FeedItemsDownloader', (done) => {
+    it.skip('FeedItemsDownloader', (done) => {
         const rss_feed_url_id = '2213';
         const url_rss_feed = 'https://www.nomination.fr/feed';
 
@@ -57,7 +73,7 @@ describe('FeedItemsDownloader', () => {
             .catch(console.log);
     });
 
-    it('FeedItemsDownloader should catch error', (done) => {
+    it.skip('FeedItemsDownloader should catch error', (done) => {
         const rss_feed_url_id = '2213';
         const url_rss_feed = 'https://www.nomination.fr/feedss';
 

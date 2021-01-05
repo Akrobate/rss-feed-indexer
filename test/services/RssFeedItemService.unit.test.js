@@ -30,7 +30,7 @@ const rss_feed_item_object_seed = {
     rss_feed_url_id: 78,
 };
 
-describe('RssFeedItemService', () => {
+describe('RssFeedItemService Formatters / Normalizerd', () => {
 
     it('Should be able to normalize search result', (done) => {
         const result = RssFeedItemService
@@ -80,5 +80,22 @@ describe('RssFeedItemService', () => {
             'http://something.com/totourl_3.png',
         ]);
         done();
+    });
+});
+
+describe('RssFeedItemService Aggregation', () => {
+
+    it('Should be able to search aggregated results', (done) => {
+        const params = {
+            publication_end_date: new Date('2020-12-14'),
+            publication_start_date: new Date('2020-12-15'),
+        };
+        RssFeedItemService
+            .getInstance()
+            .searchDailyAggregated(params)
+            .then((data) => {
+                console.log(data);
+                done();
+            });
     });
 });
