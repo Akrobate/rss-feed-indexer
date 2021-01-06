@@ -155,6 +155,92 @@ class RssFeedItemRepository {
     closeConnection() {
         return this.mongo_db_repository.closeConnection();
     }
+
+
+    /**
+     * @param {Object} criteria
+     * @param {Boolean} group_by_rss_feed_url_id
+     * @returns {Promise}
+     */
+    countDailyAggregated(criteria, group_by_rss_feed_url_id = false) {
+        const aggregation = [{
+            $match: this.formatSearchCriteria(criteria),
+        }];
+
+        if (group_by_rss_feed_url_id) {
+            aggregation.push({
+                $group: {
+                    _id: {
+                        rss_feed_url_id: '$rss_feed_url_id',
+                        date: {
+                            $dateToString: {
+                                date: '$pubDate',
+                                format: '%Y-%m-%d',
+                            },
+                        },
+                    },
+                    item_count: {
+                        $sum: 1,
+                    },
+                    first: {
+                        $first: '$$ROOT',
+                    },
+                },
+            });
+            aggregation.push({
+                $group: {
+                    _id: {
+                        date: {
+                            $dateToString: {
+                                date: '$first.pubDate',
+                                format: '%Y-%m-%d',
+                            },
+                        },
+                    },
+                    item_count: {
+                        $sum: 1,
+                    },
+                },
+            });
+        } else {
+            aggregation.push({
+                $group: {
+                    _id: {
+                        date: {
+                            $dateToString: {
+                                date: '$pubDate',
+                                format: '%Y-%m-%d',
+                            },
+                        },
+                    },
+                    item_count: {
+                        $sum: 1,
+                    },
+                },
+            });
+        }
+
+        aggregation.push({
+            $sort: {
+                '_id.date': -1,
+            },
+        });
+
+        aggregation.push({
+            $project: {
+                _id: 0,
+                date: '$_id.date',
+                item_count: '$item_count',
+            },
+        });
+
+        return this
+            .mongo_db_repository
+            .aggregate(
+                RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
+                aggregation
+            );
+    }
 }
 
 RssFeedItemRepository.instance = null;

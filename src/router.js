@@ -33,6 +33,13 @@ route_collection.post(
         .normalizedSearch(request, response)
 );
 
+route_collection.post(
+    '/rss-feed-items/count',
+    (request, response) => RssFeedItemController
+        .getInstance()
+        .count(request, response)
+);
+
 
 module.exports = {
     base_url,

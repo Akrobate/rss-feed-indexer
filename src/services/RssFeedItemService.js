@@ -60,6 +60,34 @@ class RssFeedItemService {
             );
     }
 
+
+    /**
+     * @param {Object} criteria
+     * @returns {Promise<Array>}
+     */
+    count(criteria) {
+        const {
+            daily_aggregation,
+            publication_end_date,
+            publication_start_date,
+        } = criteria;
+
+        return this.rss_feed_item_repository
+            .countDailyAggregated(
+                Object.assign(
+                    {},
+                    {
+                        publication_end_date,
+                        publication_start_date,
+                    },
+                    {
+                        language_list: ['french'],
+                    }
+                ),
+                daily_aggregation
+            );
+    }
+
     /**
      * @param {Object} criteria
      * @returns {Object}

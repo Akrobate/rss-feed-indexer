@@ -75,6 +75,29 @@ class RssFeedItemController {
                 rss_item_list: data,
             }));
     }
+
+    /**
+     * @param {Object} request
+     * @param {Object} response
+     * @returns {Object}
+     */
+    count(request, response) {
+        const {
+            publication_start_date,
+            publication_end_date,
+            daily_aggregation,
+        } = request.body;
+        return this
+            .rss_feed_item_service
+            .count({
+                daily_aggregation: daily_aggregation ? daily_aggregation : false,
+                publication_end_date,
+                publication_start_date,
+            })
+            .then((data) => response.status(200).send({
+                rss_item_count_list: data,
+            }));
+    }
 }
 
 RssFeedItemController.instance = null;
