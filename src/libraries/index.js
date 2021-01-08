@@ -9,9 +9,13 @@ const {
 const {
     FeedItemsDownloader,
 } = require('./FeedItemsDownloader');
+const {
+    RssFeedUrlDiscoverer,
+} = require('./RssFeedUrlDiscoverer');
 
 module.exports = {
     CsvFile,
     FeedItemsDownloader,
     RssFeedParser,
+    RssFeedUrlDiscoverer,
 };
