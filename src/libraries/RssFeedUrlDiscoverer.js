@@ -2,6 +2,10 @@
 
 const axios = require('axios');
 
+const {
+    RssFeedParser,
+} = require('./RssFeedParser');
+
 class RssFeedUrlDiscoverer {
 
     /**
@@ -9,16 +13,18 @@ class RssFeedUrlDiscoverer {
      */
     static getInstance() {
         if (RssFeedUrlDiscoverer.instance === null) {
-            RssFeedUrlDiscoverer.instance = new RssFeedUrlDiscoverer();
+            RssFeedUrlDiscoverer.instance = new RssFeedUrlDiscoverer(
+                RssFeedParser.getInstance()
+            );
         }
         return RssFeedUrlDiscoverer.instance;
     }
 
     /**
-     * @param {Parser} parser
+     * @param {RssFeedParser} rss_feed_parser
      */
-    constructor(parser) {
-        this.parser = parser;
+    constructor(rss_feed_parser) {
+        this.rss_feed_parser = rss_feed_parser;
     }
 
     /**
@@ -53,6 +59,17 @@ class RssFeedUrlDiscoverer {
             first,
         ] = filtered_urls;
         return first;
+    }
+
+    /**
+     * @param {string} rss_url
+     * @returns {Promise<Boolean>}
+     */
+    isAvailableRss(rss_url) {
+        return this.rss_feed_parser
+            .parseRssFeedUrl(rss_url)
+            .then(() => true)
+            .catch(() => false);
     }
 }
 
