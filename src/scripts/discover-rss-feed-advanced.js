@@ -12,46 +12,24 @@
 
 'use strict';
 
-const { default: axios } = require('axios');
+const {
+    default: axios,
+} = require('axios');
 const {
     MongoDbRepository,
 } = require('../repositories');
 const {
     RssFeedParser,
+    RssFeedUrlDiscoverer,
 } = require('../libraries');
 
 const mongodb_repository = MongoDbRepository.getInstance();
 const rss_feed_parser = RssFeedParser.getInstance();
+const rss_feed_url_discoverer = RssFeedUrlDiscoverer.getInstance();
 
 const URL_TO_TEST_COLLECTION_NAME = 'website-url-discover-rss';
 
 let website_url_to_insert_count = 0;
-
-/**
- * @param {string} html_string
- * @returns {Array<string>}
- */
-function extractRssFeedUrlFromHtml(html_string) {
-
-    let detection = null;
-    const urls = [];
-    const rex = /<link[^>]+type\s*=\s*"application\/rss\+xml"[^>]+href="?([^"]+)"?\s[^>]*>/g;
-    // const rex = /<link[^>]+rss\+xml[^>]+href="?([^"]+)"?\s[^>]*>/g;
-
-    // eslint-disable-next-line no-cond-assign
-    while (detection = rex.exec(html_string)) {
-        urls.push(detection[1]);
-    }
-
-    const stop_words = ['comments', 'comment'];
-    const filtered_urls = urls
-        .filter((url) => stop_words.find((word) => url.indexOf(word) !== -1) === undefined);
-
-    const [
-        first,
-    ] = filtered_urls;
-    return first;
-}
 
 // let a = '<link rel="alternate" type ="application/rss+xml" title="CHALON MEGARD &raquo; Flux" href="https://chalonmegard.com/index.php/feed/" />';
 // a += '<link rel="alternate" type="application/rss+xml" title="CHALON MEGARD &raquo; Flux des commentaires" href="https://chalonmegard.com/index.php/comments/feed/" />'
@@ -75,7 +53,7 @@ rss_feed_parser.parseRssFeedUrl('https://chalonmegard.com/index.php/feed/')
         return axios.get(url_to_test)
             .then((response) => {
                 console.log(response.request.res.responseUrl);
-                const rss_url = extractRssFeedUrlFromHtml(response.data);
+                const rss_url = rss_feed_url_discoverer.extractRssFeedUrlFromHtml(response.data);
                 console.log(rss_url);
                 return rss_url;
             });
