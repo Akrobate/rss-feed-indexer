@@ -241,6 +241,144 @@ class RssFeedItemRepository {
                 aggregation
             );
     }
+
+    /**
+     * date_aggregation_string
+     *   example1: '%Y-%m-%d' for daily aggregation
+     *   example2: '%Y-%m' for monthly aggregation
+     *   example3: '%Y' for yearly aggregation
+     * @param {Object} criteria
+     * @param {String} date_aggregation_string
+     * @param {Boolean} group_by_rss_feed_url_id
+     * @returns {Promise}
+     */
+    countDateAggregated(criteria, date_aggregation_string, group_by_rss_feed_url_id = false) {
+        const aggregation = [{
+            $match: this.formatSearchCriteria(criteria),
+        }];
+
+        if (group_by_rss_feed_url_id) {
+            aggregation.push({
+                $group: {
+                    _id: {
+                        rss_feed_url_id: '$rss_feed_url_id',
+                        date: {
+                            $dateToString: {
+                                date: '$pubDate',
+                                format: date_aggregation_string,
+                            },
+                        },
+                    },
+                    item_count: {
+                        $sum: 1,
+                    },
+                    first: {
+                        $first: '$$ROOT',
+                    },
+                },
+            });
+            aggregation.push({
+                $group: {
+                    _id: {
+                        date: {
+                            $dateToString: {
+                                date: '$first.pubDate',
+                                format: date_aggregation_string,
+                            },
+                        },
+                    },
+                    item_count: {
+                        $sum: 1,
+                    },
+                },
+            });
+        } else {
+            aggregation.push({
+                $group: {
+                    _id: {
+                        date: {
+                            $dateToString: {
+                                date: '$pubDate',
+                                format: date_aggregation_string,
+                            },
+                        },
+                    },
+                    item_count: {
+                        $sum: 1,
+                    },
+                },
+            });
+        }
+
+        aggregation.push({
+            $sort: {
+                '_id.date': -1,
+            },
+        });
+
+        aggregation.push({
+            $project: {
+                _id: 0,
+                date: '$_id.date',
+                item_count: '$item_count',
+            },
+        });
+
+        return this
+            .mongo_db_repository
+            .aggregate(
+                RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
+                aggregation
+            );
+    }
+
+    /**
+     * date_aggregation_string
+     *   example1: '%Y-%m-%d' for daily aggregation
+     *   example2: '%Y-%m' for monthly aggregation
+     *   example3: '%Y' for yearly aggregation
+     * @param {Object} criteria
+     * @param {String} date_aggregation_string
+     * @param {Boolean} group_by_rss_feed_url_id
+     * @returns {Promise}
+     */
+    countLanguageItems(criteria) {
+        const aggregation = [{
+            $match: this.formatSearchCriteria(criteria),
+        }];
+
+        aggregation.push({
+            $group: {
+                _id: {
+                    language: '$language',
+                },
+                item_count: {
+                    $sum: 1,
+                },
+            },
+        });
+
+        aggregation.push({
+            $sort: {
+                'item_count': -1,
+            },
+        });
+
+        aggregation.push({
+            $project: {
+                _id: 0,
+                language: '$_id.language',
+                item_count: '$item_count',
+            },
+        });
+
+        return this
+            .mongo_db_repository
+            .aggregate(
+                RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
+                aggregation
+            );
+    }
 }
 
 RssFeedItemRepository.instance = null;
