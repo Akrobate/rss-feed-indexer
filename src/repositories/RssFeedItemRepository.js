@@ -121,6 +121,7 @@ class RssFeedItemRepository {
     formatSearchCriteria(criteria) {
 
         const {
+            company_id_list,
             publication_end_date,
             publication_start_date,
             language_list,
@@ -146,6 +147,11 @@ class RssFeedItemRepository {
             });
         }
 
+        if (company_id_list) {
+            query.rss_feed_url_id = Object.assign({}, query.rss_feed_url_id, {
+                $in: company_id_list,
+            });
+        }
         return query;
     }
 

@@ -55,15 +55,25 @@ class RssFeedItemController {
      */
     normalizedSearch(request, response) {
         const {
+            company_id_list,
             limit,
             offset,
             publication_start_date,
             publication_end_date,
             daily_aggregation,
         } = request.body;
+
+        // eslint-disable-next-line init-declarations
+        let company_id_list_param;
+        if (Array.isArray(company_id_list) && company_id_list.length) {
+            company_id_list_param = company_id_list;
+        }
         return this
             .rss_feed_item_service
             .normalizedSearch({
+                // eslint-disable-next-line eqeqeq
+                // company_id_list: company_id_list == true ? company_id_list : undefined,
+                company_id_list: company_id_list_param,
                 daily_aggregation: daily_aggregation ? daily_aggregation : false,
                 limit: Number(limit),
                 offset: Number(offset),
@@ -83,13 +93,20 @@ class RssFeedItemController {
      */
     count(request, response) {
         const {
+            company_id_list,
             publication_start_date,
             publication_end_date,
             daily_aggregation,
         } = request.body;
+        // eslint-disable-next-line init-declarations
+        let company_id_list_param;
+        if (Array.isArray(company_id_list) && company_id_list.length) {
+            company_id_list_param = company_id_list;
+        }
         return this
             .rss_feed_item_service
             .count({
+                company_id_list: company_id_list_param,
                 daily_aggregation: daily_aggregation ? daily_aggregation : false,
                 publication_end_date,
                 publication_start_date,

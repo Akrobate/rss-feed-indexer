@@ -30,6 +30,7 @@ class RssFeedItemService {
      */
     normalizedSearch(criteria) {
         const {
+            company_id_list,
             daily_aggregation,
             limit,
             offset,
@@ -46,6 +47,7 @@ class RssFeedItemService {
             Object.assign(
                 {},
                 {
+                    company_id_list,
                     limit,
                     offset,
                     publication_end_date,
@@ -70,6 +72,7 @@ class RssFeedItemService {
             daily_aggregation,
             publication_end_date,
             publication_start_date,
+            company_id_list,
         } = criteria;
 
         return this.rss_feed_item_repository
@@ -77,6 +80,7 @@ class RssFeedItemService {
                 Object.assign(
                     {},
                     {
+                        company_id_list,
                         publication_end_date,
                         publication_start_date,
                     },
