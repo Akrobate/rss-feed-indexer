@@ -10,7 +10,7 @@ const {
 
 describe('RssFeedItemRepository', () => {
 
-    it.only('searchDailyAggregated', (done) => {
+    it.skip('countDailyAggregated', (done) => {
         const params = {
             limit: null,
             offset: null,
@@ -19,19 +19,124 @@ describe('RssFeedItemRepository', () => {
         };
         console.log(params);
         const rss_feed_item_repository = RssFeedItemRepository.getInstance();
-        rss_feed_item_repository.searchDailyAggregated(params)
+        rss_feed_item_repository.countDailyAggregated(params)
             .then((data) => {
                 console.log('Here...');
                 // console.log(data);
-                data.map((i) => console.log(i._id.date + ' ' + i.item_count));
+                data.map((i) => console.log(i.date + ' ' + i.item_count));
                 data.map((i) => console.log(i));
 
                 console.log(data.length);
             })
-            .catch(console.log)
-            .finally(() => rss_feed_item_repository.closeConnection());
+            .catch(done)
+            .finally(() => {
+                rss_feed_item_repository.closeConnection();
+                done();
+            });
 
-        done();
+    });
+
+    it.skip('countDailyAggregated', (done) => {
+        const params = {
+            limit: null,
+            offset: null,
+            publication_end_date: new Date('2020-11-30'),
+            publication_start_date: new Date('2020-12-15'),
+        };
+        console.log(params);
+        const rss_feed_item_repository = RssFeedItemRepository.getInstance();
+        rss_feed_item_repository.countDailyAggregated(params)
+            .then((data) => {
+                console.log('Here...');
+                // console.log(data);
+                data.map((i) => console.log(i.date + ' ' + i.item_count));
+                data.map((i) => console.log(i));
+
+                console.log(data.length);
+            })
+            .catch(done)
+            .finally(() => {
+                rss_feed_item_repository.closeConnection();
+                done();
+            });
+
+    });
+
+    it('Document redaction - yearly agg count', (done) => {
+        const params = {
+            limit: null,
+            offset: null,
+//            publication_end_date: new Date('2020-11-30'),
+//            publication_start_date: new Date('2020-12-15'),
+        };
+        console.log(params);
+        const rss_feed_item_repository = RssFeedItemRepository.getInstance();
+        rss_feed_item_repository.countDateAggregated(params, '%Y', false)
+            .then((data) => {
+                console.log('Aggregation count data');
+                // console.log(data);
+                data.map((i) => console.log(i.date + ' ' + i.item_count));
+                // data.map((i) => console.log(i));
+
+                console.log(data.length);
+            })
+            .catch(done)
+            .finally(() => {
+                rss_feed_item_repository.closeConnection();
+                done();
+            });
+
+    });
+
+    it('Document redaction - 2020 monthly agg count', (done) => {
+        const params = {
+            limit: null,
+            offset: null,
+            publication_end_date: new Date('2020-01-01'),
+            publication_start_date: new Date('2020-12-31'),
+        };
+        console.log(params);
+        const rss_feed_item_repository = RssFeedItemRepository.getInstance();
+        rss_feed_item_repository.countDateAggregated(params, '%Y-%m', true)
+            .then((data) => {
+                console.log('Aggregation count data');
+                // console.log(data);
+                data.map((i) => console.log(i.date + ' ' + i.item_count));
+                // data.map((i) => console.log(i));
+
+                console.log(data.length);
+            })
+            .catch(done)
+            .finally(() => {
+                rss_feed_item_repository.closeConnection();
+                done();
+            });
+    });
+
+    it.only('Document redaction - Language count', (done) => {
+        const params = {
+            limit: null,
+            offset: null,
+//            publication_end_date: new Date('2020-01-01'),
+//            publication_start_date: new Date('2020-12-31'),
+        };
+        console.log(params);
+        const rss_feed_item_repository = RssFeedItemRepository.getInstance();
+        rss_feed_item_repository.countLanguageItems(params)
+            .then((data) => {
+                console.log('Aggregation count data');
+                // console.log(data);
+                data.map((i) => console.log(i.language + ' ' + i.item_count));
+                // data.map((i) => console.log(i));
+
+                console.log(data.length);
+                done();
+            })
+            .catch(done)
+            .finally(() => {
+                rss_feed_item_repository.closeConnection();
+            });
+
     });
 
 
