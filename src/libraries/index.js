@@ -10,12 +10,20 @@ const {
     FeedItemsDownloader,
 } = require('./FeedItemsDownloader');
 const {
+    LanguageDetector,
+} = require('./LanguageDetector');
+const {
     RssFeedUrlDiscoverer,
 } = require('./RssFeedUrlDiscoverer');
+const {
+    RssFeedUrlDiscovererRules,
+} = require('./RssFeedUrlDiscovererRules');
 
 module.exports = {
     CsvFile,
     FeedItemsDownloader,
+    LanguageDetector,
     RssFeedParser,
     RssFeedUrlDiscoverer,
+    RssFeedUrlDiscovererRules,
 };
