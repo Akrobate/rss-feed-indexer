@@ -114,137 +114,16 @@ class RssFeedItemRepository {
     }
 
     /**
-     *
-     * @param {Object} criteria
-     * @returns {Object}
-     */
-    formatSearchCriteria(criteria) {
-
-        const {
-            company_id_list,
-            publication_end_date,
-            publication_start_date,
-            language_list,
-        } = criteria;
-
-        const query = {};
-
-        if (publication_end_date) {
-            query.pubDate = Object.assign({}, query.pubDate, {
-                $gte: new Date(publication_end_date),
-            });
-        }
-
-        if (publication_start_date) {
-            query.pubDate = Object.assign({}, query.pubDate, {
-                $lte: new Date(publication_start_date),
-            });
-        }
-
-        if (language_list) {
-            query.language = Object.assign({}, query.language, {
-                $in: language_list,
-            });
-        }
-
-        if (company_id_list) {
-            query.rss_feed_url_id = Object.assign({}, query.rss_feed_url_id, {
-                $in: company_id_list,
-            });
-        }
-        return query;
-    }
-
-    /**
-     * @returns {Promise}
-     */
-    closeConnection() {
-        return this.mongo_db_repository.closeConnection();
-    }
-
-
-    /**
      * @param {Object} criteria
      * @param {Boolean} group_by_rss_feed_url_id
      * @returns {Promise}
      */
     countDailyAggregated(criteria, group_by_rss_feed_url_id = false) {
-        const aggregation = [{
-            $match: this.formatSearchCriteria(criteria),
-        }];
-
-        if (group_by_rss_feed_url_id) {
-            aggregation.push({
-                $group: {
-                    _id: {
-                        rss_feed_url_id: '$rss_feed_url_id',
-                        date: {
-                            $dateToString: {
-                                date: '$pubDate',
-                                format: '%Y-%m-%d',
-                            },
-                        },
-                    },
-                    item_count: {
-                        $sum: 1,
-                    },
-                    first: {
-                        $first: '$$ROOT',
-                    },
-                },
-            });
-            aggregation.push({
-                $group: {
-                    _id: {
-                        date: {
-                            $dateToString: {
-                                date: '$first.pubDate',
-                                format: '%Y-%m-%d',
-                            },
-                        },
-                    },
-                    item_count: {
-                        $sum: 1,
-                    },
-                },
-            });
-        } else {
-            aggregation.push({
-                $group: {
-                    _id: {
-                        date: {
-                            $dateToString: {
-                                date: '$pubDate',
-                                format: '%Y-%m-%d',
-                            },
-                        },
-                    },
-                    item_count: {
-                        $sum: 1,
-                    },
-                },
-            });
-        }
-
-        aggregation.push({
-            $sort: {
-                '_id.date': -1,
-            },
-        });
-
-        aggregation.push({
-            $project: {
-                _id: 0,
-                date: '$_id.date',
-                item_count: '$item_count',
-            },
-        });
-
         return this
-            .mongo_db_repository
-            .aggregate(
-                RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
-                aggregation
+            .countDateAggregated(
+                criteria,
+                '%Y-%m-%d',
+                group_by_rss_feed_url_id
             );
     }
 
@@ -385,6 +264,56 @@ class RssFeedItemRepository {
                 aggregation
             );
     }
+
+    /**
+     *
+     * @param {Object} criteria
+     * @returns {Object}
+     */
+    formatSearchCriteria(criteria) {
+
+        const {
+            company_id_list,
+            publication_end_date,
+            publication_start_date,
+            language_list,
+        } = criteria;
+
+        const query = {};
+
+        if (publication_end_date) {
+            query.pubDate = Object.assign({}, query.pubDate, {
+                $gte: new Date(publication_end_date),
+            });
+        }
+
+        if (publication_start_date) {
+            query.pubDate = Object.assign({}, query.pubDate, {
+                $lte: new Date(publication_start_date),
+            });
+        }
+
+        if (language_list) {
+            query.language = Object.assign({}, query.language, {
+                $in: language_list,
+            });
+        }
+
+        if (company_id_list) {
+            query.rss_feed_url_id = Object.assign({}, query.rss_feed_url_id, {
+                $in: company_id_list,
+            });
+        }
+        return query;
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    closeConnection() {
+        return this.mongo_db_repository.closeConnection();
+    }
+
 }
 
 RssFeedItemRepository.instance = null;
