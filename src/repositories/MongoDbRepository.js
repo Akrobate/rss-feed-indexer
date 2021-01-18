@@ -381,6 +381,25 @@ class MongoDbRepository {
     }
 
     /**
+     * Returns a list of found documents
+     *
+     * @param {String} collection_name
+     * @param {Object} index_params
+     * @returns {Promise<Object|error>}
+     */
+    createIndex(collection_name, index_params) {
+        return this
+            .getConnection()
+            .then(() => this.useDataBase(MongoDbRepository.DATABASE_NAME))
+            .then((dbo) => dbo
+                .collection(collection_name)
+                .createIndex(
+                    index_params
+                )
+            );
+    }
+
+    /**
      * @returns {ObjectId}
      */
     buildNewObjectId() {

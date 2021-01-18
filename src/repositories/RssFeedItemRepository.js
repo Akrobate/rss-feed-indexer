@@ -308,6 +308,23 @@ class RssFeedItemRepository {
     }
 
     /**
+     * While script is running it checks for existence of
+     * items by guid and rss_feed_url_id
+     * This method creates the multi index on this two fields
+     * @return {Promise}
+     */
+    createIndexForExistanceCheck() {
+        return this.mongo_db_repository
+            .createIndex(
+                RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
+                {
+                    guid: 1,
+                    rss_feed_url_id: 1,
+                }
+            );
+    }
+
+    /**
      * @returns {Promise}
      */
     closeConnection() {
