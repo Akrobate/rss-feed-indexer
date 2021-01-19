@@ -18,11 +18,15 @@ const {
 const {
     RssFeedUrlDiscovererRules,
 } = require('./RssFeedUrlDiscovererRules');
+const {
+    RssFeedItemQualification,
+} = require('./RssFeedItemQualification');
 
 module.exports = {
     CsvFile,
     FeedItemsDownloader,
     LanguageDetector,
+    RssFeedItemQualification,
     RssFeedParser,
     RssFeedUrlDiscoverer,
     RssFeedUrlDiscovererRules,

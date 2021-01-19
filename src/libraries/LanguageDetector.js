@@ -18,6 +18,16 @@ class LanguageDetector {
      */
     constructor() {
         this.language_detect = new LanguageDetect();
+
+        this.SCORE_THRESHOLD = 0.08;
+    }
+
+    /**
+     * @param {Number} score
+     * @returns {void}
+     */
+    setScoreThreshold(score) {
+        this.SCORE_THRESHOLD = score;
     }
 
     /**
@@ -70,9 +80,8 @@ class LanguageDetector {
      * @returns {String}
      */
     applyScoreThreshold(detection) {
-        const SCORE_THRESHOLD = 0.0;
         if (detection) {
-            if (Number(detection.score) > SCORE_THRESHOLD) {
+            if (Number(detection.score) > this.SCORE_THRESHOLD) {
                 return detection;
             }
         }
