@@ -55,14 +55,14 @@ class RssFeedItemQualification {
                 result_item.language = this.language_detector
                     .detectLanguageApplyingScoreThreshold(item.contentSnippet);
 
-                const extracted_images_list = this.images_qualification
-                    .extractImgUrlsFromHtml(item['content:encoded']);
-
                 result_item.tags_list = this.tags_qualification
                     .generateTagsFromCategoriesList(item.categories);
 
+                result_item.image_url_list = this.images_qualification
+                    .extractImgUrlsFromHtml(item['content:encoded']);
+
                 result_item.image_url = null;
-                return this.images_qualification.findBestImage(extracted_images_list)
+                return this.images_qualification.findBestImage(result_item.image_url_list)
                     .then((best_image) => {
                         result_item.image_url = best_image;
                     })
