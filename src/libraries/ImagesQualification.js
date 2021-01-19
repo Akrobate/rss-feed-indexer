@@ -22,6 +22,7 @@ class ImagesQualification {
         this.parser = parser;
 
         this.SIZE_THRESHOLD = 10000;
+        this.DETECTION_TIMEOUT = 40000;
     }
 
     /**
@@ -30,6 +31,14 @@ class ImagesQualification {
      */
     setSizeThreshold(size) {
         this.SIZE_THRESHOLD = size;
+    }
+
+    /**
+     * @param {Number} timeout
+     * @returns {void}
+     */
+    setDetectionTimeout(timeout) {
+        this.DETECTION_TIMEOUT = timeout;
     }
 
     /**
@@ -66,9 +75,13 @@ class ImagesQualification {
      * @returns {Array<Object>}
      */
     findImageSizeMetaData(image_url_list) {
-        console.log(image_url_list);
         return Promise.mapSeries(image_url_list, (image_url) => axios
-            .head(image_url)
+            .head(
+                image_url,
+                {
+                    timeout: this.DETECTION_TIMEOUT,
+                }
+            )
             .then((headers_data) => ({
                 size: Number(headers_data.headers['content-length']),
                 url: image_url,
