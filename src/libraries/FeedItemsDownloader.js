@@ -9,6 +9,10 @@ const {
     RssFeedParser,
 } = require('./RssFeedParser');
 
+const {
+    RssFeedItemQualification,
+} = require('./RssFeedItemQualification');
+
 class FeedItemsDownloader {
 
 
@@ -18,9 +22,14 @@ class FeedItemsDownloader {
     }
 
     // eslint-disable-next-line require-jsdoc
-    constructor(mongo_db_repository, rss_feed_parser) {
+    constructor(
+        mongo_db_repository,
+        rss_feed_parser,
+        rss_feed_item_qualification
+    ) {
         this.mongo_db_repository = mongo_db_repository;
         this.rss_feed_parser = rss_feed_parser;
+        this.rss_feed_item_qualification = rss_feed_item_qualification;
     }
 
     // eslint-disable-next-line require-jsdoc
@@ -28,7 +37,8 @@ class FeedItemsDownloader {
         if (FeedItemsDownloader.instance === null) {
             FeedItemsDownloader.instance = new FeedItemsDownloader(
                 MongoDbRepository.getInstance(),
-                RssFeedParser.getInstance()
+                RssFeedParser.getInstance(),
+                RssFeedItemQualification.getInstance()
             );
         }
         return FeedItemsDownloader.instance;
@@ -59,10 +69,13 @@ class FeedItemsDownloader {
                         .checkItemExists(enriched_item)
                         .then((data) => {
                             if (data === null) {
-                                return this.mongo_db_repository.insertDocument(
-                                    FeedItemsDownloader.RSS_FEED_ITEMS_COLLECTION_NAME,
-                                    enriched_item
-                                );
+                                return this.rss_feed_item_qualification
+                                    .qualifyFeedItem(enriched_item)
+                                    .then((qualified_item) => this.mongo_db_repository
+                                        .insertDocument(
+                                            FeedItemsDownloader.RSS_FEED_ITEMS_COLLECTION_NAME,
+                                            qualified_item
+                                        ));
                             }
                             return null;
                         });

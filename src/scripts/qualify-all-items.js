@@ -28,7 +28,10 @@ let criteria = {
 criteria = {};
 
 mongodb_repository
-    .findDocumentList(RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME, criteria)
+    .findDocumentList(
+        RssFeedItemRepository.RSS_FEED_ITEMS_COLLECTION_NAME,
+        criteria
+    )
     .then((rss_item_list) => {
         logger.log('All rss loaded');
         return Promise.map(
