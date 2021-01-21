@@ -35,7 +35,7 @@ describe('RssFeedItemService Formatters / Normalizerd', () => {
     it('Should be able to normalize search result', (done) => {
         const result = RssFeedItemService
             .getInstance()
-            .normalizeRssItem(rss_feed_item_object_seed);
+            .formatRssItem(rss_feed_item_object_seed);
         expect(result).to.deep.equal(
             {
                 id: '5fe80ed763126431a277cc72',

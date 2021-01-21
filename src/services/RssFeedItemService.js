@@ -54,11 +54,12 @@ class RssFeedItemService {
                     publication_start_date,
                 },
                 {
+                    is_visible: true,
                     language_list: ['french'],
                 }
             ))
             .then((rss_item_list) => rss_item_list
-                .map((item) => this.normalizeRssItem(item))
+                .map((item) => this.formatRssItem(item))
             );
     }
 
@@ -137,13 +138,16 @@ class RssFeedItemService {
      * @param {Object} item
      * @returns {Object}
      */
-    normalizeRssItem(item) {
+    formatRssItem(item) {
         const {
             categories,
+            image_url_list,
+            image_url,
             title,
             pubDate,
             link,
             contentSnippet,
+            tags_list,
             rss_feed_url_id,
             _id,
             item_count,
@@ -152,12 +156,14 @@ class RssFeedItemService {
         return {
             categories: categories ? categories : [],
             id: _id,
-            image_url_list: this.extractImgUrlsFromHtml(item['content:encoded']),
+            image_url,
+            image_url_list,
             item_count,
             link,
             publication_date: moment(pubDate).toISOString(),
             rss_feed_url_id,
             summary: contentSnippet,
+            tags_list,
             title,
         };
     }
