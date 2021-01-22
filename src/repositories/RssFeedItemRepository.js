@@ -274,6 +274,7 @@ class RssFeedItemRepository {
 
         const {
             company_id_list,
+            is_visible,
             publication_end_date,
             publication_start_date,
             language_list,
@@ -304,6 +305,11 @@ class RssFeedItemRepository {
                 $in: company_id_list,
             });
         }
+
+        if (is_visible !== null && is_visible !== undefined) {
+            query.is_visible = is_visible;
+        }
+
         return query;
     }
 
