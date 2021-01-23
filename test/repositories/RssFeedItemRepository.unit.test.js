@@ -8,7 +8,9 @@ const {
     expect,
 } = require('chai');
 
-describe('RssFeedItemRepository', () => {
+describe('RssFeedItemRepository', function() {
+
+    this.timeout(5000);
 
     it.skip('countDailyAggregated', (done) => {
         const params = {
@@ -36,21 +38,22 @@ describe('RssFeedItemRepository', () => {
 
     });
 
-    it.skip('countDailyAggregated', (done) => {
+    it.only('Document redaction - countDailyAggregated', (done) => {
         const params = {
             limit: null,
             offset: null,
-            publication_end_date: new Date('2020-11-30'),
-            publication_start_date: new Date('2020-12-15'),
+            publication_end_date: new Date('2021-01-04'),
+            publication_start_date: new Date('2021-01-18'),
         };
         console.log(params);
         const rss_feed_item_repository = RssFeedItemRepository.getInstance();
-        rss_feed_item_repository.countDailyAggregated(params)
+        rss_feed_item_repository.countDailyAggregated(params, true)
             .then((data) => {
                 console.log('Here...');
                 // console.log(data);
-                data.map((i) => console.log(i.date + ' ' + i.item_count));
-                data.map((i) => console.log(i));
+                // data.map((i) => console.log(i.date + ' ' + i.item_count));
+                data.map((i) => console.log(i.item_count));
+                // data.map((i) => console.log(i));
 
                 console.log(data.length);
             })
@@ -62,7 +65,7 @@ describe('RssFeedItemRepository', () => {
 
     });
 
-    it('Document redaction - yearly agg count', (done) => {
+    it.skip('Document redaction - yearly agg count', (done) => {
         const params = {
             limit: null,
             offset: null,
@@ -88,7 +91,7 @@ describe('RssFeedItemRepository', () => {
 
     });
 
-    it('Document redaction - 2020 monthly agg count', (done) => {
+    it.skip('Document redaction - 2020 monthly agg count', (done) => {
         const params = {
             limit: null,
             offset: null,
@@ -113,7 +116,7 @@ describe('RssFeedItemRepository', () => {
             });
     });
 
-    it.only('Document redaction - Language count', (done) => {
+    it.skip('Document redaction - Language count', (done) => {
         const params = {
             limit: null,
             offset: null,
