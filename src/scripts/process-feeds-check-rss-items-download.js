@@ -6,15 +6,15 @@ const Promise = require('bluebird');
 
 const {
     logger,
-} = require('./logger');
+} = require('../logger');
 
 const {
     FeedItemsDownloader,
-} = require('./libraries/');
+} = require('../libraries/');
 
 const {
     MongoDbRepository,
-} = require('./repositories/');
+} = require('../repositories/');
 
 const mongodb_repository = MongoDbRepository.getInstance();
 const feed_items_downloader = FeedItemsDownloader.getInstance();
