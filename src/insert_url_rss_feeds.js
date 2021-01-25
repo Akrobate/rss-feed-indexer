@@ -1,5 +1,9 @@
 /* eslint-disable sort-keys */
 
+/**
+ * @todo: Rename and move script to srcipts sections
+ */
+
 'use strict';
 
 const Promise = require('bluebird');
