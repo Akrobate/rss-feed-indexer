@@ -9,12 +9,12 @@
 const Promise = require('bluebird');
 const {
     CsvFile,
-} = require('./libraries');
+} = require('../libraries');
 const {
     MongoDbRepository,
-} = require('./repositories');
+} = require('../repositories');
 
-const source_file = './data/sources/WordPress.csv';
+const source_file = '../data/sources/WordPress.csv';
 const rss_feed_url_collection_name = 'rss-feed-url';
 
 const csv_file = CsvFile.getInstance();
@@ -22,6 +22,7 @@ const mongodb_repository = MongoDbRepository.getInstance();
 
 const website_url_to_insert = [];
 let website_url_to_insert_count = 0;
+
 mongodb_repository
     .createCollectionIfNotExists(rss_feed_url_collection_name)
     .then(() => csv_file.readLinePerLineCsvFile(source_file, (data) => {
