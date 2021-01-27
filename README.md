@@ -1,6 +1,26 @@
 # rss-feed-indexer
 
-### Scripts
+### Api server
+
+To start the API server you'll need to up the infrastructure
+
+```sh
+docker-compose -f docker-compose-mongodb.yml
+```
+
+Then youll need to up the server
+
+```sh
+docker-compose -f docker-compose-mongodb.yml
+```
+
+The command launched by the docker is
+
+```sh
+npm start
+```
+
+### Exploitation scripts
 
 #### Process the full download and valide urls
 
@@ -13,3 +33,4 @@ node src/scripts/process-feeds-check-rss-items-download
 ```sh
 node src/scripts/process-optimised-rss-items-download
 ```
+
