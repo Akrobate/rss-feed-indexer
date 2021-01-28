@@ -130,7 +130,7 @@ class RssFeedItemService {
             {},
             first,
             {
-                item_count,
+                item_count: item_count ? item_count : null,
             }
         );
     }
@@ -159,7 +159,7 @@ class RssFeedItemService {
             id: _id,
             image_url: image_url ? image_url : null,
             image_url_list: image_url_list ? image_url_list : [],
-            item_count,
+            item_count: item_count ? item_count : null,
             link: link ? link : '',
             publication_date: moment(pubDate).toISOString(),
             rss_feed_url_id,
