@@ -8,8 +8,10 @@ const {
     expect,
 } = require('chai');
 
+// eslint-disable-next-line func-names
 describe('RssFeedItemRepository', function() {
 
+    // eslint-disable-next-line no-invalid-this
     this.timeout(5000);
 
     it.skip('countDailyAggregated', (done) => {
@@ -38,7 +40,7 @@ describe('RssFeedItemRepository', function() {
 
     });
 
-    it.only('Document redaction - countDailyAggregated', (done) => {
+    it.skip('Document redaction - countDailyAggregated', (done) => {
         const params = {
             limit: null,
             offset: null,

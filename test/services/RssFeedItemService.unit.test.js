@@ -39,9 +39,10 @@ describe('RssFeedItemService Formatters / Normalizerd', () => {
         expect(result).to.deep.equal(
             {
                 id: '5fe80ed763126431a277cc72',
-                image_url_list: [
-                    'http://www.hygiene-et-nature.com/wp-content/uploads/2019/12/logo_ecocert-150x150.jpg',
-                    'http://www.hygiene-et-nature.com/wp-content/uploads/systalium/images_produits/VI_DYACIL AV_CONCENTRE _5L.jpg'
+                image_url_list: [],
+                image_url: null,
+                categories: [
+                    'Actus',
                 ],
                 link: 'http://www.hygiene-et-nature.com/un-desinfectant-concentre-ecocert/',
                 publication_date: '2020-04-16T09:23:32.000Z',
@@ -49,6 +50,8 @@ describe('RssFeedItemService Formatters / Normalizerd', () => {
                 summary: 'Nouveau à notre gamme ! DYACIL AV CONCENTRE est un Détergent Désinfectant Concentré, apte au contact alimentaire. Certifié par Ecocert, il est formulé sans ammonium quaternaire et avec 99,4% du total des ingrédients sont d’origine végétale et/ou minérale. Particulièrement recommandé en cuisines collectives et en industrie agro-alimentaires, il peut s’utiliser : en centrale de désinfection, en […]\n'
                     + 'Cet article Un détergent désinfectant concentré labellisé par ECOCERT ! est apparu en premier sur Hygiène et Nature.',
                 title: 'Un détergent désinfectant concentré labellisé par ECOCERT !',
+                tags_list: [],
+                item_count: null,
             }
         );
 
@@ -94,7 +97,7 @@ describe('RssFeedItemService Aggregation', () => {
             .getInstance()
             .searchDailyAggregated(params)
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 done();
             });
     });

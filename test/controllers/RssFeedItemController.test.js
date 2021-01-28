@@ -80,6 +80,8 @@ describe('RssFeedItemController', () => {
             .expects('normalizedSearch')
             .once()
             .withArgs({
+                company_id_list: undefined,
+                daily_aggregation: false,
                 limit: NaN,
                 offset: NaN,
                 publication_end_date: '2020-12-31T00:00:00Z',
