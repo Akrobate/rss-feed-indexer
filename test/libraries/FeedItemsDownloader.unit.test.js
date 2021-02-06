@@ -20,7 +20,7 @@ const {
     configuration,
 } = require('../../src/configuration');
 
-describe('FeedItemsDownloader', () => {
+describe('FeedItemsDownloader',() => {
 
     const mocks = {};
     const stubs = {};
@@ -39,8 +39,7 @@ describe('FeedItemsDownloader', () => {
         done();
     });
 
-    it.skip('FeedItemsDownloader', (done) => {
-
+    it('FeedItemsDownloader', (done) => {
         const url_rss_feed = 'https://www.nomination.fr/feed';
         mocks.rss_feed_parser
             .expects('parseRssFeedUrl')
@@ -52,10 +51,10 @@ describe('FeedItemsDownloader', () => {
         feed_items_downloader
             .getItemsFromRssFeedUrl(url_rss_feed)
             .then((data) => {
-                console.log(data.items[0].guid);
-                // fs.writeFileSync('./test/seeds/feed_rss_result', JSON.stringify(data));
+                mocks.rss_feed_parser.verify();
                 done();
-            });
+            })
+            .catch(done);
     });
 
     it.skip('FeedItemsDownloader', (done) => {
