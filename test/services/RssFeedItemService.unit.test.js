@@ -7,6 +7,12 @@ const {
 } = require('chai');
 
 const {
+    mock,
+} = require('sinon');
+
+const moment = require('moment');
+
+const {
     RssFeedItemService,
 } = require('../../src/services');
 
@@ -96,9 +102,66 @@ describe('RssFeedItemService Aggregation', () => {
         RssFeedItemService
             .getInstance()
             .searchDailyAggregated(params)
-            .then((data) => {
+            .then(() => {
                 // console.log(data);
                 done();
             });
+    });
+});
+
+
+describe('normalizedSearch unit test', () => {
+    const mocks = {};
+
+    before((done) => {
+        const rss_feed_item_service = RssFeedItemService.getInstance();
+        mocks.rss_feed_item_service = mock(rss_feed_item_service);
+        done();
+    });
+
+    after((done) => {
+        mocks.rss_feed_item_service.restore();
+        done();
+    });
+
+    describe('Testing submethod selection switch', () => {
+        it('case searchDailyAggregated', (done) => {
+            const input = {
+                company_id_list: [1],
+                daily_aggregation: true,
+                limit: 10,
+                offset: 0,
+                publication_end_date: moment().toISOString(),
+                publication_start_date: moment().toISOString(),
+            };
+
+            mocks.rss_feed_item_service
+                .expects('searchDailyAggregated')
+                .once()
+                .withArgs({
+                    company_id_list: input.company_id_list,
+                    limit: input.limit,
+                    offset: input.offset,
+                    publication_end_date: input.publication_end_date,
+                    publication_start_date: input.publication_start_date,
+                    is_visible: true,
+                    language_list: ['french'],
+                })
+                .returns(Promise.resolve([]));
+
+            RssFeedItemService
+                .getInstance()
+                .normalizedSearch(input)
+                .then(() => {
+                    try {
+                        mocks.rss_feed_item_service.verify();
+                    } catch (error) {
+                        done(error);
+                    }
+                    done();
+                })
+                .catch(done);
+
+        });
     });
 });
