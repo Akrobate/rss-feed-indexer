@@ -2,9 +2,6 @@
 
 const fs = require('fs');
 const csv = require('csv-parser');
-const {
-    parse,
-} = require('json2csv');
 
 class CsvFile {
 
@@ -32,43 +29,6 @@ class CsvFile {
             .on('error', (error) => reject(error))
             .on('end', () => resolve())
         );
-    }
-
-    /**
-     * @param {*} file_path
-     * @param {*} data
-     * @returns {Promise}
-     */
-    saveJsonToCsvFileResult(file_path, data) {
-        const FILE_ENCODING = 'utf8';
-        const CSV_OPTIONS = {
-            delimiter: ',',
-            eol: '\r\n',
-        };
-        return new Promise((resolve, reject) => {
-            if (fs.existsSync(file_path)) {
-                const csv_data = parse(data, Object.assign(
-                    {
-                        header: false,
-                    },
-                    CSV_OPTIONS
-                ));
-                fs.appendFile(file_path, `${csv_data}${CSV_OPTIONS.eol}`, FILE_ENCODING, (error) => {
-                    if (error) {
-                        return reject(error);
-                    }
-                    return resolve();
-                });
-            } else {
-                const csv_data = parse(data, CSV_OPTIONS);
-                fs.writeFile(file_path, `${csv_data}${CSV_OPTIONS.eol}`, FILE_ENCODING, (error) => {
-                    if (error) {
-                        return reject(error);
-                    }
-                    return resolve();
-                });
-            }
-        });
     }
 }
 
