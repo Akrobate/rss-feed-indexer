@@ -1,5 +1,5 @@
 /* eslint-disable sort-keys */
-
+/* istanbul ignore file */
 /**
  * @todo: Rename and move script to srcipts sections
  */
@@ -7,6 +7,9 @@
 'use strict';
 
 const Promise = require('bluebird');
+const {
+    logger,
+} = require('../logger');
 const {
     CsvFile,
 } = require('../libraries');
@@ -30,11 +33,11 @@ mongodb_repository
         website_url_to_insert_count += 1;
     }))
     .then(() => {
-        console.log('Start inserting');
+        logger.log('Start inserting');
         return Promise.mapSeries(
             website_url_to_insert,
             (data) => {
-                console.log(`Remaining documents to insert: ${website_url_to_insert_count}`);
+                logger.log(`Remaining documents to insert: ${website_url_to_insert_count}`);
                 website_url_to_insert_count--;
                 return mongodb_repository
                     .findDocument(rss_feed_url_collection_name, {
@@ -52,7 +55,7 @@ mongodb_repository
                                         rss_available: null,
                                     }
                                 )
-                                .catch(console.log);
+                                .catch(logger.log);
                         }
                         return null;
                     });
