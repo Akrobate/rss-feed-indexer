@@ -4,8 +4,8 @@ const {
     RssFeedParser,
 } = require('./RssFeedParser');
 const {
-    CsvFile,
-} = require('./CsvFile');
+    CsvFileLoader,
+} = require('./CsvFileLoader');
 const {
     FeedItemsDownloader,
 } = require('./FeedItemsDownloader');
@@ -23,7 +23,7 @@ const {
 } = require('./RssFeedItemQualification');
 
 module.exports = {
-    CsvFile,
+    CsvFileLoader,
     FeedItemsDownloader,
     LanguageDetector,
     RssFeedItemQualification,
