@@ -3,22 +3,36 @@
 const fs = require('fs');
 const csv = require('csv-parser');
 const {
+    logger,
+} = require('logger');
+const {
     MongoDbRepository,
 } = require('../repositories');
-class CsvFile {
+
+class CsvFileLoader {
+
+    /**
+     * @static
+     */
+    static get RSS_FEED_URL_COLLECTION_NAME() {
+        return 'rss-feed-url';
+    }
 
     /**
      * @returns {Object}
      */
     static getInstance() {
-        if (CsvFile.instance === null) {
-            CsvFile.instance = new CsvFile(
+        if (CsvFileLoader.instance === null) {
+            CsvFileLoader.instance = new CsvFileLoader(
                 MongoDbRepository.getInstance()
             );
         }
-        return CsvFile.instance;
+        return CsvFileLoader.instance;
     }
 
+    /**
+     * @param {MongoDbRepository} mongo_db_repository
+     */
     constructor(mongo_db_repository) {
         this.mongo_db_repository = mongo_db_repository;
     }
@@ -41,12 +55,17 @@ class CsvFile {
 
 
     /**
+     * @param {String} source_file
      * @returns {Promise}
      */
-    loadCsvFileUrlToDatabase() {
-        return this.mongodb_repository
-            .createCollectionIfNotExists(rss_feed_url_collection_name)
-            .then(() => csv_file.readLinePerLineCsvFile(source_file, (data) => {
+    loadCsvFileUrlToDatabase(source_file) {
+
+        const website_url_to_insert = [];
+        let website_url_to_insert_count = 0;
+
+        return this.mongo_db_repository
+            .createCollectionIfNotExists(CsvFileLoader.RSS_FEED_URL_COLLECTION_NAME)
+            .then(() => this.readLinePerLineCsvFile(source_file, (data) => {
                 website_url_to_insert.push(data);
                 website_url_to_insert_count += 1;
             }))
@@ -57,20 +76,20 @@ class CsvFile {
                     (data) => {
                         logger.log(`Remaining documents to insert: ${website_url_to_insert_count}`);
                         website_url_to_insert_count--;
-                        return mongodb_repository
-                            .findDocument(rss_feed_url_collection_name, {
+                        return this.mongo_db_repository
+                            .findDocument(CsvFileLoader.RSS_FEED_URL_COLLECTION_NAME, {
                                 website_url: data.website_url,
                             })
                             .then((found_document) => {
                                 if (found_document === null) {
-                                    return mongodb_repository
-                                        .insertDocument(rss_feed_url_collection_name,
+                                    return this.mongo_db_repository
+                                        .insertDocument(CsvFileLoader.RSS_FEED_URL_COLLECTION_NAME,
                                             {
                                                 id: Number(data.id),
-                                                website_url: data.website_url,
-                                                rss_feed_url: `${data.website_url}/feed`.replace('//feed', '/feed'),
                                                 last_check_date: null,
                                                 rss_available: null,
+                                                rss_feed_url: `${data.website_url}/feed`.replace('//feed', '/feed'),
+                                                website_url: data.website_url,
                                             }
                                         )
                                         .catch(logger.log);
@@ -80,12 +99,12 @@ class CsvFile {
                     }
                 );
             })
-            .then(() => mongodb_repository.closeConnection());
+            .then(() => this.mongo_db_repository.closeConnection());
     }
 }
 
-CsvFile.instance = null;
+CsvFileLoader.instance = null;
 
 module.exports = {
-    CsvFile,
+    CsvFileLoader,
 };
