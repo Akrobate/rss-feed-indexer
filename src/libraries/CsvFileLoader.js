@@ -4,7 +4,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const {
     logger,
-} = require('logger');
+} = require('../logger');
 const {
     MongoDbRepository,
 } = require('../repositories');
