@@ -39,7 +39,7 @@ describe('FeedItemsDownloader', () => {
         done();
     });
 
-    it.only('Download nomination rss feed', (done) => {
+    it('Download nomination rss feed', (done) => {
         const url_rss_feed = 'https://www.nomination.fr/feed';
         mocks.rss_feed_parser
             .expects('parseRssFeedUrl')
@@ -50,7 +50,7 @@ describe('FeedItemsDownloader', () => {
         const feed_items_downloader = FeedItemsDownloader.getInstance();
         feed_items_downloader
             .getItemsFromRssFeedUrl(url_rss_feed)
-            .then((data) => {
+            .then(() => {
                 mocks.rss_feed_parser.verify();
                 done();
             })
