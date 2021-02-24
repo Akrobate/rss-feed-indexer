@@ -18,9 +18,7 @@ class ImagesQualification {
     /**
      * @param {Parser} parser
      */
-    constructor(parser) {
-        this.parser = parser;
-
+    constructor() {
         this.SIZE_THRESHOLD = 10000;
         this.DETECTION_TIMEOUT = 40000;
     }
