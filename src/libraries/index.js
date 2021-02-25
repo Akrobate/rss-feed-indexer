@@ -21,10 +21,13 @@ const {
 const {
     RssFeedItemQualification,
 } = require('./RssFeedItemQualification');
-
+const {
+    ImagesQualification,
+} = require('./ImagesQualification');
 module.exports = {
     CsvFileLoader,
     FeedItemsDownloader,
+    ImagesQualification,
     LanguageDetector,
     RssFeedItemQualification,
     RssFeedParser,
