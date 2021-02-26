@@ -11,7 +11,7 @@ const {
     expect,
 } = require('chai');
 
-describe.only('ImagesQualification unit tests', () => {
+describe('ImagesQualification unit tests', () => {
     const mocks = {};
     let image_qualification = null;
 
@@ -47,8 +47,9 @@ describe.only('ImagesQualification unit tests', () => {
                 }
             )
             .returns(Promise.resolve({
-                size: 500,
-                url: url_list[0],
+                headers: {
+                    'content-length': 500,
+                },
             }));
 
         mocks.axios.expects('head')
@@ -60,8 +61,9 @@ describe.only('ImagesQualification unit tests', () => {
                 }
             )
             .returns(Promise.resolve({
-                size: 2000,
-                url: url_list[1],
+                headers: {
+                    'content-length': 2000,
+                },
             }));
         mocks.axios.expects('head')
             .once()
@@ -72,18 +74,19 @@ describe.only('ImagesQualification unit tests', () => {
                 }
             )
             .returns(Promise.resolve({
-                size: 3000,
-                url: url_list[2],
+                headers: {
+                    'content-length': 3000,
+                },
             }));
 
         image_qualification
             .findBestImage(url_list)
             .then((data) => {
                 mocks.axios.verify();
-                console.log(data);
+                expect(data).to.equal(url_list[2]);
                 done();
-
-            });
+            })
+            .catch(done);
 
     });
 });
