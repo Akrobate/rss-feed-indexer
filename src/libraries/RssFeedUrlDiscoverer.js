@@ -8,6 +8,7 @@ const {
 
 class RssFeedUrlDiscoverer {
 
+    /* istanbul ignore next */
     /**
      * @returns {RssFeedUrlDiscoverer}
      */
