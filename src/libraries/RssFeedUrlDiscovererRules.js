@@ -39,7 +39,6 @@ class RssFeedUrlDiscovererRules {
      * @returns {Promise}
      */
     rssFeedDiscover(website_url) {
-        // console.log(url)
         const result = {
             resolved_url: null,
             rule_1: null,
@@ -59,7 +58,7 @@ class RssFeedUrlDiscovererRules {
                     .generateDefaultFeedUrlFromWebsiteUrl(website_url);
                 const rss_url_rule3 = this.rss_feed_parser
                     .generateDefaultFeedUrlFromWebsiteUrl(result.resolved_url);
-                // console.log(rss_url_rule1);
+
                 return this.discoverValidator(rss_url_rule1)
                     .then((data) => {
                         result.rule_1 = data;
@@ -72,15 +71,11 @@ class RssFeedUrlDiscovererRules {
                     .then((data) => {
                         result.rule_3 = data;
                     });
-
-                // console.log(rss_url);
-                // return rss_url;
             })
             .catch((error) => {
                 if (error.response) {
                     result.status = error.response.status;
                 }
-                // console.log(error)
                 result.status = 0;
             })
             .then(() => result);
@@ -101,8 +96,6 @@ class RssFeedUrlDiscovererRules {
             .then((data) => {
                 result.feed_url = feed_rss_url_to_test;
                 result.item_count = data.items ? data.items.length : 0;
-                // console.log('in then', data);
-                console.log(result);
             })
             .catch((error) => {
                 // console.log('Error Rule 1', error.message);
