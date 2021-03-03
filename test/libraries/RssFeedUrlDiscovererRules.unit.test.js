@@ -37,7 +37,7 @@ describe('RssFeedUrlDiscovererRules unit test', () => {
         done();
     });
 
-    it('rssFeedDiscover', (done) => {
+    it('rssFeedDiscover nominal case', (done) => {
         const website_url = 'http://someurl.fr';
         const html_string = `
             <!DOCTYPE html>
@@ -62,14 +62,85 @@ describe('RssFeedUrlDiscovererRules unit test', () => {
             .withArgs(website_url)
             .returns(Promise.resolve({
                 data: html_string,
+                request: {
+                    res: {
+                        responseUrl: website_url,
+                    },
+                },
                 status: 200,
             }));
 
+        mocks.rss_feed_parser
+            .expects('parseRssFeedUrlWithUrlCheck')
+            .once()
+            .withArgs('http://artiom-fedorov.blogspot.com/feeds/posts/default?alt=rss')
+            .returns(Promise.resolve({
+                items: [
+                    {},
+                ],
+            }));
+
+        mocks.rss_feed_parser
+            .expects('parseRssFeedUrlWithUrlCheck')
+            .once()
+            .withArgs('http://someurl.fr/feed')
+            .returns(Promise.reject(new Error('getaddrinfo ENOTFOUND someurl.fr')));
+
+        mocks.rss_feed_parser
+            .expects('parseRssFeedUrlWithUrlCheck')
+            .once()
+            .withArgs('http://someurl.fr/feed')
+            .returns(Promise.reject(new Error('getaddrinfo ENOTFOUND someurl.fr')));
+
         rss_feed_url_discoverer_rules
             .rssFeedDiscover(website_url)
-            .then((data) => {
-                console.log(data);
-                // expect().to.equal('http://artiom-fedorov.blogspot.com/feeds/posts/default?alt=rss');
+            .then((response) => {
+                mocks.axios.verify();
+                mocks.rss_feed_parser.verify();
+                expect(response).to.deep.equal({
+                    resolved_url: 'http://someurl.fr',
+                    rule_1: {
+                        error: null,
+                        feed_url: 'http://artiom-fedorov.blogspot.com/feeds/posts/default?alt=rss',
+                        item_count: 1,
+                    },
+                    rule_2: {
+                        error: 'getaddrinfo ENOTFOUND someurl.fr',
+                        feed_url: 'http://someurl.fr/feed',
+                        item_count: null,
+                    },
+                    rule_3: {
+                        error: 'getaddrinfo ENOTFOUND someurl.fr',
+                        feed_url: 'http://someurl.fr/feed',
+                        item_count: null,
+                    },
+                    status: 200,
+                });
+                done();
+            })
+            .catch(done);
+    });
+
+    it('rssFeedDiscover axios error', (done) => {
+        const website_url = 'http://someurl.fr';
+
+        mocks.axios
+            .expects('get')
+            .once()
+            .withArgs(website_url)
+            .returns(Promise.reject(new Error('NEVER MIND')));
+
+        rss_feed_url_discoverer_rules
+            .rssFeedDiscover(website_url)
+            .then((response) => {
+                mocks.axios.verify();
+                expect(response).to.deep.equal({
+                    resolved_url: null,
+                    rule_1: null,
+                    rule_2: null,
+                    rule_3: null,
+                    status: 0,
+                });
                 done();
             })
             .catch(done);
