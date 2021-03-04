@@ -146,5 +146,61 @@ describe('RssFeedUrlDiscovererRules unit test', () => {
             .catch(done);
     });
 
+    it('rssFeedDiscover axios http error', (done) => {
+        const website_url = 'http://someurl.fr';
+
+        mocks.axios
+            .expects('get')
+            .once()
+            .withArgs(website_url)
+            .returns(Promise.reject(Object.assign(
+                {},
+                new Error('NEVER MIND'),
+                {
+                    response: {
+                        status: 404,
+                    },
+                }
+            )));
+
+        rss_feed_url_discoverer_rules
+            .rssFeedDiscover(website_url)
+            .then((response) => {
+                mocks.axios.verify();
+                expect(response).to.deep.equal({
+                    resolved_url: null,
+                    rule_1: null,
+                    rule_2: null,
+                    rule_3: null,
+                    status: 404,
+                });
+                done();
+            })
+            .catch(done);
+    });
+
+    it('discoverValidator items not setted', (done) => {
+        const website_url = 'http://someurl.fr';
+
+        mocks.rss_feed_parser
+            .expects('parseRssFeedUrlWithUrlCheck')
+            .once()
+            .withArgs(website_url)
+            .returns(Promise.resolve({}));
+
+        rss_feed_url_discoverer_rules
+            .discoverValidator(website_url)
+            .then((response) => {
+                mocks.rss_feed_parser.verify();
+                expect(response).to.deep.equal({
+                    error: null,
+                    feed_url: website_url,
+                    item_count: 0,
+                });
+                done();
+            })
+            .catch(done);
+    });
+
 });
 
