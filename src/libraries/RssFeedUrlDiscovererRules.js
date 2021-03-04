@@ -11,6 +11,7 @@ const {
 
 class RssFeedUrlDiscovererRules {
 
+    /* istanbul ignore next */
     /**
      * @returns {RssFeedUrlDiscovererRules}
      */
@@ -73,10 +74,10 @@ class RssFeedUrlDiscovererRules {
                     });
             })
             .catch((error) => {
+                result.status = 0;
                 if (error.response) {
                     result.status = error.response.status;
                 }
-                result.status = 0;
             })
             .then(() => result);
     }
