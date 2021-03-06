@@ -18,6 +18,7 @@ class RssFeedItemRepository {
         this.mongo_db_repository = mongo_db_repository;
     }
 
+    /* istanbul ignore next */
     // eslint-disable-next-line require-jsdoc
     static getInstance() {
         if (RssFeedItemRepository.instance === null) {
