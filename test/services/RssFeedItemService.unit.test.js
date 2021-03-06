@@ -16,6 +16,10 @@ const {
     RssFeedItemService,
 } = require('../../src/services');
 
+const {
+    RssFeedItemRepository,
+} = require('../../src/repositories');
+
 const rss_feed_item_object_seed = {
     _id: '5fe80ed763126431a277cc72',
     creator: 'sd',
@@ -115,12 +119,15 @@ describe('normalizedSearch unit test', () => {
 
     before((done) => {
         const rss_feed_item_service = RssFeedItemService.getInstance();
+        const rss_feed_item_repository = RssFeedItemRepository.getInstance();
         mocks.rss_feed_item_service = mock(rss_feed_item_service);
+        mocks.rss_feed_item_repository = mock(rss_feed_item_repository);
         done();
     });
 
     after((done) => {
         mocks.rss_feed_item_service.restore();
+        mocks.rss_feed_item_repository.restore();
         done();
     });
 
@@ -162,6 +169,23 @@ describe('normalizedSearch unit test', () => {
                 })
                 .catch(done);
 
+        });
+    });
+
+    describe('Simple search', () => {
+        it('Should be able to search', (done) => {
+            mocks.rss_feed_item_repository.expects('search')
+                .once()
+                .returns(Promise.resolve('test'));
+
+            RssFeedItemService
+                .getInstance()
+                .search()
+                .then(() => {
+                    mocks.rss_feed_item_repository.verify();
+                    done();
+                })
+                .catch(done);
         });
     });
 });
