@@ -40,7 +40,7 @@ const rss_feed_item_object_seed = {
     rss_feed_url_id: 78,
 };
 
-describe('RssFeedItemService Formatters / Normalizerd', () => {
+describe('RssFeedItemService Formatters / Normalizers', () => {
 
     it('Should be able to normalize search result', (done) => {
         const result = RssFeedItemService
@@ -94,6 +94,36 @@ describe('RssFeedItemService Formatters / Normalizerd', () => {
         ]);
         done();
     });
+
+    it('Should be able to extract url images form strange declarations', (done) => {
+        expect(
+            RssFeedItemService
+                .getInstance()
+                .formatDailyAggregatedResponse({
+                    first: {
+                        a: 1,
+                    },
+                })
+        ).to.deep.equal({
+            a: 1,
+            item_count: null,
+        });
+        expect(
+            RssFeedItemService
+                .getInstance()
+                .formatDailyAggregatedResponse({
+                    first: {
+                        a: 1,
+                    },
+                    item_count: 15,
+                })
+        ).to.deep.equal({
+            a: 1,
+            item_count: 15,
+        });
+        done();
+    });
+
 });
 
 describe('RssFeedItemService Aggregation', () => {
