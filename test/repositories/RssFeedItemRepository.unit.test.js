@@ -286,6 +286,26 @@ describe('RssFeedItemRepository', function() {
                 })
                 .catch(done);
         });
+
+        // @TODO: check arguments
+        it('searchDailyAggregated', (done) => {
+            const params = {
+                limit: 10,
+                offset: 10,
+                publication_start_date: new Date('Thu Apr 16 2020 09:23:32 GMT+0000'),
+            };
+            mocks.mongo_db_repository.expects('aggregate')
+                .once()
+                .returns(Promise.resolve({}));
+            RssFeedItemRepository.getInstance()
+                .searchDailyAggregated(params)
+                .then(() => {
+                    mocks.mongo_db_repository.verify();
+                    done();
+                })
+                .catch(done);
+        });
+
         it('closeConnection', (done) => {
             mocks.mongo_db_repository.expects('closeConnection')
                 .once()
