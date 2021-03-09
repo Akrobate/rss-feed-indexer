@@ -1,5 +1,6 @@
-'use strict';
+/* istanbul ignore file */
 
+'use strict';
 
 const {
     MongoDbRepository,
