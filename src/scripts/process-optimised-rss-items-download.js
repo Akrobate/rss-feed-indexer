@@ -1,6 +1,6 @@
-'use strict';
+/* istanbul ignore file */
 
-// 55376
+'use strict';
 
 const Promise = require('bluebird');
 

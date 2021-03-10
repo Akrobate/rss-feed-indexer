@@ -19,5 +19,5 @@ rss_feed_item_repository
         console.log('Exiting process');
         mongodb_repository.closeConnection();
         // eslint-disable-next-line no-process-exit
-        // process.exit();
+        process.exit();
     });
