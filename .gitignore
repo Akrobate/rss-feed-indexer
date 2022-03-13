@@ -2,3 +2,5 @@ node_modules/
 configuration.yml
 .nyc_output/
 coverage/
+draft.js
+npm-debug.log
