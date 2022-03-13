@@ -5,14 +5,21 @@
 const {
     MongoDbRepository,
     RssFeedItemRepository,
+    RssFeedUrlRepository,
 } = require('../repositories/');
 
 const mongodb_repository = MongoDbRepository.getInstance();
 const rss_feed_item_repository = RssFeedItemRepository.getInstance();
+const rss_feed_url_repository = RssFeedUrlRepository.getInstance();
 
 
-rss_feed_item_repository
-    .createIndexForExistanceCheck()
+Promise
+    .all([
+        rss_feed_item_repository
+            .createIndexForExistanceCheck(),
+        rss_feed_url_repository
+            .createIndexForExistanceCheck(),
+    ])
     .then(console.log)
     .catch(console.log)
     .finally(() => {
