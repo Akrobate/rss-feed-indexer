@@ -1,5 +1,18 @@
 # rss-feed-indexer
 
+### Generate dataset
+
+```sql
+SELECT 
+    id, website_url 
+FROM 
+    companies 
+WHERE 
+    is_active = TRUE
+    AND website_url IS NOT NULL
+    AND website_url != ''
+```
+
 ### Api server
 
 To start the API server you'll need to up the infrastructure
