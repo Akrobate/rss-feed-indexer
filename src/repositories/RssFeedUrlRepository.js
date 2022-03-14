@@ -47,6 +47,39 @@ class RssFeedUrlRepository {
     }
 
     /**
+     *
+     * @param {Object} criteria
+     * @returns {Object}
+     */
+    formatSearchCriteria(criteria) {
+        const {
+            rss_available,
+        } = criteria;
+        const query = {};
+        if (rss_available) {
+            query.rss_available = Object.assign({}, query.pubDate, {
+                $eq: rss_available,
+            });
+        }
+        return query;
+    }
+
+    /**
+     * @async
+     * @param {Object} criteria
+     * @returns {Number}
+     */
+    async count(criteria) {
+        const query = this.formatSearchCriteria(criteria);
+        const result = await this.mongo_db_repository
+            .countDocuments(
+                RssFeedUrlRepository.RSS_URL_ITEMS_COLLECTION_NAME,
+                query
+            );
+        return result;
+    }
+
+    /**
      * @returns {Promise}
      */
     closeConnection() {
