@@ -22,6 +22,13 @@ const mongodb_repository = MongoDbRepository.getInstance();
 const feed_items_downloader = FeedItemsDownloader.getInstance();
 const rss_feed_url_collection_name = 'rss-feed-url';
 
+const url_to_test_criteria = {
+    rss_available: {
+        $eq: null,
+    },
+};
+
+
 function updateUrl(_id, data) {
     return mongodb_repository.updateDocument(
         rss_feed_url_collection_name,
@@ -34,9 +41,9 @@ function updateUrl(_id, data) {
         });
 }
 
-mongodb_repository.findDocumentList(rss_feed_url_collection_name, {})
+mongodb_repository.findDocumentList(rss_feed_url_collection_name, url_to_test_criteria)
     .then((url_row_list) => {
-        logger.log('Documents loaded');
+        logger.log(`${url_row_list.length} Documents loaded`);
         return Promise.map(
             url_row_list,
             (url_row) => {
