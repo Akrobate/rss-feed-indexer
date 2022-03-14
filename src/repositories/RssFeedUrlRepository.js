@@ -56,7 +56,7 @@ class RssFeedUrlRepository {
             rss_available,
         } = criteria;
         const query = {};
-        if (rss_available) {
+        if (rss_available !== undefined) {
             query.rss_available = Object.assign({}, query.pubDate, {
                 $eq: rss_available,
             });
