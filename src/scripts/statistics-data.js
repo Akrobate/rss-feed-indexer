@@ -36,7 +36,7 @@ const rss_feed_url_repository = RssFeedUrlRepository.getInstance();
     ] = url_availability_statistics;
 
     logger.log(`Total url count: \t ${total_count}`);
-    logger.log(`Found url feeds: \t  ${rss_available_count}`);
+    logger.log(`Found url feeds: \t ${rss_available_count}`);
     logger.log(`Not available feeds: \t ${rss_not_available_count}`);
     logger.log(`Remain url to test: \t ${rss_not_tested_count}`);
 

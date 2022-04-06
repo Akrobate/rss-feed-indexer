@@ -4,3 +4,7 @@ configuration.yml
 coverage/
 draft.js
 npm-debug.log
+.scannerwork/
+sonar-scan-docker.sh
+
+
