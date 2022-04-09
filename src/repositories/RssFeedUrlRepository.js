@@ -67,16 +67,15 @@ class RssFeedUrlRepository {
     /**
      * @async
      * @param {Object} criteria
-     * @returns {Number}
+     * @returns {Promise<Number>}
      */
-    async count(criteria) {
+    count(criteria) {
         const query = this.formatSearchCriteria(criteria);
-        const result = await this.mongo_db_repository
+        return this.mongo_db_repository
             .countDocuments(
                 RssFeedUrlRepository.RSS_URL_ITEMS_COLLECTION_NAME,
                 query
             );
-        return result;
     }
 
     /**

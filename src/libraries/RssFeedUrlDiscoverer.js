@@ -45,7 +45,6 @@ class RssFeedUrlDiscoverer {
         let detection = null;
         const urls = [];
         const rex = /<link[^>]+type\s*=\s*"application\/rss\+xml"[^>]+href="?([^"]+)"?\s[^>]*>/g;
-        // const rex = /<link[^>]+rss\+xml[^>]+href="?([^"]+)"?\s[^>]*>/g;
 
         // eslint-disable-next-line no-cond-assign
         while (detection = rex.exec(html_string)) {

@@ -99,7 +99,6 @@ class RssFeedUrlDiscovererRules {
                 result.item_count = data.items ? data.items.length : 0;
             })
             .catch((error) => {
-                // console.log('Error Rule 1', error.message);
                 result.error = error.message;
                 result.feed_url = feed_rss_url_to_test;
             })
